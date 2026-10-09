@@ -10,8 +10,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
+  static const Color _green = Color(0xFF1A6556);
 
+  // Akun terdaftar (hardcode)
+  static const String _validUsername = 'mercu';
+  static const String _validPassword = '123456';
+
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -22,6 +27,31 @@ class _LoginPageState extends State<LoginPage> {
     _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void _showMessage(String text) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  void _login() {
+    if (!_formKey.currentState!.validate()) return;
+
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text;
+
+    if (username.toLowerCase() != _validUsername) {
+      _showMessage('Akun belum terdaftar');
+      return;
+    }
+
+    if (password != _validPassword) {
+      _showMessage('Kata sandi salah');
+      return;
+    }
+
+    Navigator.pushReplacementNamed(context, '/profile');
   }
 
   @override
@@ -37,24 +67,23 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  "MASUK",
+                const Text(
+                  'MASUK',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Kanit',
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF1A6556),
+                    color: _green,
                   ),
                 ),
-                Center(child: LogoWidget()),
-                SizedBox(height: 70),
+                const Center(child: LogoWidget()),
+                const SizedBox(height: 70),
                 TextFormField(
                   controller: _usernameController,
                   decoration: InputDecoration(
-                    hintText: "",
-                    label: Text("Nama Pengguna"),
-                    prefixIcon: Icon(Icons.person),
+                    label: const Text('Nama Pengguna'),
+                    prefixIcon: const Icon(Icons.person),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -66,14 +95,13 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: isVisibility,
                   decoration: InputDecoration(
-                    hintText: "Kata Sandi",
-                    label: Text("Kata Sandi"),
-                    prefixIcon: Icon(Icons.lock),
+                    label: const Text('Kata Sandi'),
+                    prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -98,22 +126,18 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 70),
+                const SizedBox(height: 70),
                 SizedBox(
                   width: double.infinity,
                   height: 42,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF1A6556),
+                      backgroundColor: _green,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        Navigator.pushNamed(context, "/profile");
-                      }
-                    },
+                    onPressed: _login,
                     child: const Text(
                       'MASUK',
                       style: TextStyle(
@@ -124,11 +148,11 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 Center(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, "/forpassEmail");
+                      Navigator.pushNamed(context, '/forpassEmail');
                     },
                     child: const Text(
                       'Lupa Kata Sandi?',
@@ -140,28 +164,28 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 35),
-                Row(
+                const SizedBox(height: 35),
+                const Row(
                   children: [
-                    const Expanded(child: Divider(thickness: 0.5)),
-
-                    const Padding(
+                    Expanded(child: Divider(thickness: 0.5)),
+                    Padding(
                       padding: EdgeInsets.symmetric(horizontal: 22),
                       child: Text(
                         'Atau',
                         style: TextStyle(fontSize: 9, color: Colors.black54),
                       ),
                     ),
-
-                    const Expanded(child: Divider(thickness: 0.5)),
+                    Expanded(child: Divider(thickness: 0.5)),
                   ],
                 ),
-                SizedBox(height: 35),
+                const SizedBox(height: 35),
                 SizedBox(
                   width: double.infinity,
                   height: 44,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _showMessage('Login Google belum tersedia');
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFF7F7F7),
                       foregroundColor: Colors.black,
@@ -173,15 +197,12 @@ class _LoginPageState extends State<LoginPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Google logo
-                        // SvgPicture.asset(
-                        //   'lib/images/google.svg',
-                        //   width: 20,
-                        //   height: 20,
-                        // ),
-
+                        SvgPicture.asset(
+                          'lib/images/google.svg',
+                          width: 20,
+                          height: 20,
+                        ),
                         const SizedBox(width: 12),
-
                         const Text(
                           'Lanjutkan dengan Google',
                           style: TextStyle(
@@ -193,7 +214,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 35),
+                const SizedBox(height: 35),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -201,10 +222,9 @@ class _LoginPageState extends State<LoginPage> {
                       'Tidak punya akun? ',
                       style: TextStyle(fontSize: 11),
                     ),
-
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, "/register");
+                        Navigator.pushNamed(context, '/register');
                       },
                       child: const Text(
                         'Daftar disini',
